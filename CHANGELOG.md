@@ -15,6 +15,18 @@ cut and that this clone does not carry.
 
 ## [Unreleased]
 
+## [0.0.70] - 2026-09-13
+
+Software artifacts are refreshed from verified vendor bytes: Claude Code
+2.1.270, Codex 0.154.0, Grok Build 1.0.31, OpenCode 1.18.30, Cursor
+2026.09.10-fd3934a and Antigravity CLI 1.2.2. Pi remains at 0.85.1.
+Every published platform digest and rollback pin is transcribed from the same
+verified ledger.
+
+Lifecycle integration tests remain compatible with the pinned Rust 1.98.0
+toolchain by reading Cargo's executable path at runtime. Provider behavior,
+protocol-v3 declarations and setup ownership are unchanged.
+
 ## [0.0.69] - 2026-09-08
 
 Native lifecycle evidence runs every provider command in the same isolated
