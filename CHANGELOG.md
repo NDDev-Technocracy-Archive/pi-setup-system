@@ -15,6 +15,19 @@ cut and that this clone does not carry.
 
 ## [Unreleased]
 
+## [0.0.71] - 2026-09-13
+
+nddev-builder guidance is refreshed against each harness's current native
+extension model. Codex custom agents now cover inherited session settings and
+project scope; its hook guide includes Interrupt and the limits of asynchronous
+hooks as enforcement. Antigravity plugin and subagent guidance records the
+current manifest minimum, bundled agents, workspace isolation, inherited safety
+boundaries and validation behavior observed in CLI 1.2.2.
+
+Every builder manifest now cites all vendor pages used by its generated
+component guides, including sources beyond the base permission posture. The
+provider protocol, setup ownership and software artifact pins are unchanged.
+
 ## [0.0.70] - 2026-09-13
 
 Software artifacts are refreshed from verified vendor bytes: Claude Code
