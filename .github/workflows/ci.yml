@@ -86,7 +86,7 @@ jobs:
       # that would use them is off.
       issues: write # the stale bot closes threads
       pull-requests: write # the labeler applies labels
-    uses: NDDev-Technocracy-Archive/ci-workflows-20261014/.github/workflows/pr-hygiene.yml@93eeb2a65e98a29e9dbff7909f67c6419abff046 # commit:93eeb2a65e98a29e9dbff7909f67c6419abff046
+    uses: NDDev-Technocracy-Archive/ci-workflows-20261014/.github/workflows/pr-hygiene.yml@4b53916e8a7b1c2dd220766b6dd4170a843f622e # commit:93eeb2a65e98a29e9dbff7909f67c6419abff046
 
 
   boundary:
