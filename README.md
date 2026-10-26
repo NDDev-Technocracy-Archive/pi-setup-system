@@ -16,10 +16,10 @@ configuration. The installation component does not grant trust or launch Pi
 when applying a project bundle. Unqualified project surfaces remain outside
 the declared profile.
 
-The isolated [Rust CLI preview](https://github.com/ai-engineers-guild/ai-stp/tree/dev/apps/cli-v2)
-reports its implemented capabilities through its executable registry. Native
-writable lifecycle and production cutover are separate acceptance steps;
-this component's commands below do not claim that the preview already installs.
+The [native CLI](https://github.com/ai-engineers-guild/ai-stp/tree/main/apps/cli)
+reports its commands and platform installation availability through its executable
+registry. The component's declared scopes and the consumer's authenticated routes
+must both support a setup before the CLI can apply it.
 
 Installs, reselects, restores and removes a complete Pi harness configuration, and owns the program lifecycle.
 
