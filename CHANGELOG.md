@@ -13,7 +13,7 @@ This repository ships `scripts/evidence.py` beside the Cargo workspace. Other
 paths an older entry names may describe checks that ran when that release was
 cut and that this clone does not carry.
 
-## [Unreleased]
+## [0.0.95] - 2026-10-26
 
 Project bundles have a separate native-files profile rooted at the explicit
 checkout. Its managed entries preserve credentials, trust, sessions, sibling
