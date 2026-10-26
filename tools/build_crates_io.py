@@ -189,8 +189,14 @@ def build(harness: str, out_root: Path, release: str) -> Path:
     (out / "src/main.rs").write_text(
         f"{docs}\n\n{projection_lints}\n\n{modules}\n{body}", encoding="utf-8"
     )
-    software = source_root.joinpath("src/software.rs").read_text(encoding="utf-8")
-    (out / "src/software.rs").write_text(external_paths(software), encoding="utf-8")
+    component_sources = source_root / "src"
+    for source in sorted(component_sources.rglob("*.rs")):
+        relative = source.relative_to(component_sources)
+        if relative == Path("main.rs"):
+            continue
+        destination = out / "src" / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(external_paths(source.read_text(encoding="utf-8")), encoding="utf-8")
 
     build_rs = source_root.joinpath("build.rs").read_text(encoding="utf-8")
     build_rs = build_rs.replace(
@@ -253,6 +259,10 @@ def main() -> int:
             built = root / f"{first}-setup-system"
             subprocess.run(
                 ["cargo", "build", "--quiet", "--manifest-path", str(built / "Cargo.toml")],
+                check=True,
+            )
+            subprocess.run(
+                ["cargo", "test", "--no-run", "--quiet", "--manifest-path", str(built / "Cargo.toml")],
                 check=True,
             )
             answer = subprocess.run(
