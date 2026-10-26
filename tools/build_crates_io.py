@@ -51,7 +51,7 @@ def version() -> str:
 
 def external_paths(text: str) -> str:
     for name in MODULES:
-        text = re.sub(rf"(?<![:\w]){name}::", f"crate::{name}::", text)
+        text = re.sub(rf"(?<!::)(?<!\w){name}::", f"crate::{name}::", text)
     return text
 
 
@@ -265,8 +265,17 @@ def main() -> int:
                 ["cargo", "test", "--no-run", "--quiet", "--manifest-path", str(built / "Cargo.toml")],
                 check=True,
             )
+            metadata = subprocess.run(
+                ["cargo", "metadata", "--no-deps", "--format-version", "1",
+                 "--manifest-path", str(built / "Cargo.toml")],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            target = Path(json.loads(metadata.stdout)["target_directory"])
+            executable = target / "debug" / f"{first}-setup-system"
             answer = subprocess.run(
-                [built / "target/debug" / f"{first}-setup-system", "provider-info"],
+                [executable, "provider-info"],
                 check=True,
                 capture_output=True,
                 text=True,
