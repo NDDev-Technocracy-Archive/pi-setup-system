@@ -5,8 +5,6 @@
     reason = "integration fixtures require Cargo's binary"
 )]
 
-use std::process::Command;
-
 use serde_json::Value;
 
 fn owns(namespaces: &[Value], path: &str) -> bool {
@@ -22,13 +20,8 @@ fn owns(namespaces: &[Value], path: &str) -> bool {
 fn public_project_profile_routes_supported_kinds_without_claiming_runtime_or_credentials() {
     let executable = std::env::var("CARGO_BIN_EXE_pi-setup-system")
         .expect("Cargo must expose the Pi installation component");
-    let output = Command::new(executable)
-        .arg("provider-info")
-        .output()
-        .expect("the built installation component must start");
-    assert!(output.status.success(), "provider-info failed");
-    assert!(output.stderr.is_empty(), "provider-info wrote stderr");
-    let info: Value = serde_json::from_slice(&output.stdout).expect("public provider-info JSON");
+    let info = harness_runtime::probe::provider_info(std::path::Path::new(&executable))
+        .expect("the built installation component must return public provider-info JSON");
     let profiles = info["scoped_projection_profiles"]
         .as_array()
         .expect("scoped profiles must be exposed");
