@@ -228,6 +228,17 @@ def main() -> int:
                 raise SystemExit("no harness crate under crates/ -- nothing to self-check")
             for harness in harnesses:
                 package = build(harness, root, args.version)
+                source_directory = ROOT / "crates" / f"{harness}-setup-system" / "src"
+                missing_modules = [
+                    source.relative_to(source_directory).as_posix()
+                    for source in sorted(source_directory.rglob("*.rs"))
+                    if not (package / "src" / source.relative_to(source_directory)).is_file()
+                ]
+                if missing_modules:
+                    raise SystemExit(
+                        f"{harness}: standalone package omits component modules: "
+                        + ", ".join(missing_modules)
+                    )
                 document = package.joinpath("Cargo.toml").read_text(encoding="utf-8")
                 expected = f'name = "{harness}-setup-system"'
                 if expected not in document or "nddev-" + harness in document:

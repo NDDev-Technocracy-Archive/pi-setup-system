@@ -427,6 +427,7 @@ dependencies = [
  "harness-runtime",
  "provider-v3",
  "serde_json",
+ "setup-core",
 ]
 
 [[package]]

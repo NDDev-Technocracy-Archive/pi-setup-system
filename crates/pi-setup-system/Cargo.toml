@@ -17,5 +17,8 @@ serde_json = { workspace = true }
 provider-v3 = { workspace = true }
 harness-runtime = { workspace = true }
 
+[dev-dependencies]
+setup-core = { workspace = true }
+
 [lints]
 workspace = true
