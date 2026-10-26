@@ -8,6 +8,14 @@ orchestration; this component owns the final harness files and recovery.
 This repository remains the public source and release boundary, with the
 existing package identity. It is part of ai-stp, not a separate user workflow.
 
+Project-scoped ai-stp bundles target the checkout root through the distinct
+project profile advertised by `provider-info`. They preserve neighbouring
+project files and use recorded-path ownership for replacement and removal.
+Pi's own project trust remains a separate prerequisite for loading project
+configuration. The installation component does not grant trust or launch Pi
+when applying a project bundle. Unqualified project surfaces remain outside
+the declared profile.
+
 The isolated [Rust CLI preview](https://github.com/ai-engineers-guild/ai-stp/tree/dev/apps/cli-v2)
 reports its implemented capabilities through its executable registry. Native
 writable lifecycle and production cutover are separate acceptance steps;
