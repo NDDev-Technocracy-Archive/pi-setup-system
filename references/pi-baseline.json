@@ -436,6 +436,91 @@
           }
         ],
         "declined": []
+      },
+      {
+        "target_scope": "project",
+        "root": "the explicit checkout root",
+        "verified_at": "2026-10-26",
+        "surfaces": [
+          {
+            "path": "AGENTS.md",
+            "kinds": [
+              "instruction"
+            ],
+            "shape": "file",
+            "source": "https://pi.dev/docs/latest/configuration",
+            "evidence": "page"
+          },
+          {
+            "path": ".pi/extensions",
+            "kinds": [
+              "plugin"
+            ],
+            "shape": "directory",
+            "source": "https://pi.dev/docs/latest/configuration",
+            "evidence": "page"
+          },
+          {
+            "path": ".pi/prompts",
+            "kinds": [
+              "command"
+            ],
+            "shape": "directory",
+            "source": "https://pi.dev/docs/latest/configuration",
+            "evidence": "page"
+          },
+          {
+            "path": ".pi/settings.json",
+            "kinds": [
+              "setting"
+            ],
+            "shape": "file",
+            "source": "https://pi.dev/docs/latest/configuration",
+            "evidence": "page"
+          },
+          {
+            "path": ".pi/skills",
+            "kinds": [
+              "skill"
+            ],
+            "shape": "directory",
+            "source": "https://pi.dev/docs/latest/configuration",
+            "evidence": "page"
+          }
+        ],
+        "declined": [
+          {
+            "path": ".pi",
+            "reason": "Only the explicitly named managed children are owned; the whole project directory would include unowned runtime and credential files.",
+            "source": "https://pi.dev/docs/latest/configuration"
+          },
+          {
+            "path": ".pi/mcp.json",
+            "reason": "Native MCP is documented by current Pi, but this provider has not qualified its project projection and declares no MCP kind.",
+            "source": "https://pi.dev/docs/latest/configuration"
+          },
+          {
+            "path": ".pi/SYSTEM.md",
+            "reason": "No current component route writes this system-prompt replacement; preserve existing project bytes as unowned.",
+            "source": "https://pi.dev/docs/latest/configuration"
+          },
+          {
+            "path": ".pi/APPEND_SYSTEM.md",
+            "reason": "No current component route writes this system-prompt addition; preserve existing project bytes as unowned.",
+            "source": "https://pi.dev/docs/latest/configuration"
+          },
+          {
+            "path": ".pi/themes",
+            "reason": "No current component route writes project themes; preserve existing project bytes as unowned.",
+            "source": "https://pi.dev/docs/latest/configuration"
+          },
+          {
+            "path": "AGENTS.override.md",
+            "reason": "A user override is not owned or removed by a project setup.",
+            "source": "https://pi.dev/docs/latest/configuration"
+          }
+        ],
+        "loading_note": "Pi loads project configuration after its own project trust is granted; sessionDir is documented as an exception. This declaration neither grants trust nor proves activation. Context instructions are a separate hierarchical resource."
       }
     ],
     "projection_basis": {

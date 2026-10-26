@@ -74,6 +74,20 @@ fn run(exe: &Path, arguments: &[&OsStr]) -> Ran {
     }
 }
 
+/// Read the built component's public declaration through the owned spawn site.
+///
+/// # Errors
+///
+/// Reports a process failure or a response that is not one JSON declaration.
+pub fn provider_info(exe: &Path) -> Result<serde_json::Value, String> {
+    let result = run(exe, &[OsStr::new("provider-info")]);
+    if !result.ok {
+        return Err(format!("provider-info failed: {}", result.out));
+    }
+    serde_json::from_str(&result.out)
+        .map_err(|error| format!("provider-info is not one JSON declaration: {error}"))
+}
+
 /// Run the executable against a target.
 fn at(exe: &Path, target: &Path, arguments: &[&str]) -> Ran {
     let mut all: Vec<&OsStr> = arguments.iter().map(OsStr::new).collect();

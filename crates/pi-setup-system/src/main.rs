@@ -23,6 +23,9 @@ use std::process::ExitCode;
 
 mod software;
 
+#[cfg(test)]
+mod project_tests;
+
 use harness_runtime::{Foreign, Harness, LaunchBinding, PreservationSurface, Scoped, Shadow};
 use provider_v3::{ComponentKind, ProjectionKind, TargetScope};
 
@@ -187,7 +190,7 @@ pub const PI: Harness = Harness {
         ComponentKind::Command,
     ],
     projection_kinds: &[ProjectionKind::NativeFiles, ProjectionKind::Package],
-    // **Two scopes.** The second is `~/.agents`, the one root in this estate
+    // User-root is `~/.agents`, the one root in this estate
     // that belongs to a convention rather than to a product: a *sibling* of
     // this product's configuration home, not a child, so nothing declared
     // against the target above can reach it. That is what `user_root` is for.
@@ -205,19 +208,43 @@ pub const PI: Harness = Harness {
     // this root. This sentence used to say one declared it; all five do now --
     // the reason had simply not been re-read when the thing it described
     // changed, and the sentence kept its old answer.
-    scoped_projections: &[Scoped {
-        target_scope: TargetScope::UserRoot,
-        // Distinct from the global identity, because the digest binds a
-        // declaration together with the scope it owns.
-        profile_id: "pi/native-files/user-root/1",
-        component_kinds: &[ComponentKind::Skill],
-        projection_kinds: &[ProjectionKind::NativeFiles],
-        // Relative to `~/.agents`, which is the target this scope names -- so a
-        // skill is `skills/<name>` rather than `.agents/skills/<name>`. Writing
-        // the root into the path would put the skills at
-        // `~/.agents/.agents/skills`.
-        native_namespaces: &["skills"],
-    }],
+    scoped_projections: &[
+        Scoped {
+            target_scope: TargetScope::UserRoot,
+            // Distinct from the global identity, because the digest binds a
+            // declaration together with the scope it owns.
+            profile_id: "pi/native-files/user-root/1",
+            component_kinds: &[ComponentKind::Skill],
+            projection_kinds: &[ProjectionKind::NativeFiles],
+            // Relative to `~/.agents`, which is the target this scope names -- so a
+            // skill is `skills/<name>` rather than `.agents/skills/<name>`. Writing
+            // the root into the path would put the skills at
+            // `~/.agents/.agents/skills`.
+            native_namespaces: &["skills"],
+        },
+        Scoped {
+            target_scope: TargetScope::Project,
+            profile_id: "pi/native-files/project/1",
+            component_kinds: &[
+                ComponentKind::Instruction,
+                ComponentKind::Skill,
+                ComponentKind::Plugin,
+                ComponentKind::Setting,
+                ComponentKind::Command,
+            ],
+            projection_kinds: &[ProjectionKind::NativeFiles],
+            // Relative to the checkout root, not the agent directory. Claim only
+            // managed entries so credentials, trust, sessions and sibling files
+            // remain outside every project namespace.
+            native_namespaces: &[
+                "AGENTS.md",
+                ".pi/extensions",
+                ".pi/prompts",
+                ".pi/settings.json",
+                ".pi/skills",
+            ],
+        },
+    ],
     max_files: 8192,
     max_bytes: 64 * 1024 * 1024,
     kit_identity: include_str!("../../../provider-kit/v3/KIT-IDENTITY.json"),

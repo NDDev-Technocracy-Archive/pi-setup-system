@@ -51,7 +51,7 @@ def version() -> str:
 
 def external_paths(text: str) -> str:
     for name in MODULES:
-        text = re.sub(rf"(?<![:\w]){name}::", f"crate::{name}::", text)
+        text = re.sub(rf"(?<!::)(?<!\w){name}::", f"crate::{name}::", text)
     return text
 
 
@@ -189,8 +189,14 @@ def build(harness: str, out_root: Path, release: str) -> Path:
     (out / "src/main.rs").write_text(
         f"{docs}\n\n{projection_lints}\n\n{modules}\n{body}", encoding="utf-8"
     )
-    software = source_root.joinpath("src/software.rs").read_text(encoding="utf-8")
-    (out / "src/software.rs").write_text(external_paths(software), encoding="utf-8")
+    component_sources = source_root / "src"
+    for source in sorted(component_sources.rglob("*.rs")):
+        relative = source.relative_to(component_sources)
+        if relative == Path("main.rs"):
+            continue
+        destination = out / "src" / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(external_paths(source.read_text(encoding="utf-8")), encoding="utf-8")
 
     build_rs = source_root.joinpath("build.rs").read_text(encoding="utf-8")
     build_rs = build_rs.replace(
@@ -228,6 +234,17 @@ def main() -> int:
                 raise SystemExit("no harness crate under crates/ -- nothing to self-check")
             for harness in harnesses:
                 package = build(harness, root, args.version)
+                source_directory = ROOT / "crates" / f"{harness}-setup-system" / "src"
+                missing_modules = [
+                    source.relative_to(source_directory).as_posix()
+                    for source in sorted(source_directory.rglob("*.rs"))
+                    if not (package / "src" / source.relative_to(source_directory)).is_file()
+                ]
+                if missing_modules:
+                    raise SystemExit(
+                        f"{harness}: standalone package omits component modules: "
+                        + ", ".join(missing_modules)
+                    )
                 document = package.joinpath("Cargo.toml").read_text(encoding="utf-8")
                 expected = f'name = "{harness}-setup-system"'
                 if expected not in document or "nddev-" + harness in document:
@@ -244,8 +261,21 @@ def main() -> int:
                 ["cargo", "build", "--quiet", "--manifest-path", str(built / "Cargo.toml")],
                 check=True,
             )
+            subprocess.run(
+                ["cargo", "test", "--no-run", "--quiet", "--manifest-path", str(built / "Cargo.toml")],
+                check=True,
+            )
+            metadata = subprocess.run(
+                ["cargo", "metadata", "--no-deps", "--format-version", "1",
+                 "--manifest-path", str(built / "Cargo.toml")],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            target = Path(json.loads(metadata.stdout)["target_directory"])
+            executable = target / "debug" / f"{first}-setup-system"
             answer = subprocess.run(
-                [built / "target/debug" / f"{first}-setup-system", "provider-info"],
+                [executable, "provider-info"],
                 check=True,
                 capture_output=True,
                 text=True,

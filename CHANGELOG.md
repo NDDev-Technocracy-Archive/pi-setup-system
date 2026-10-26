@@ -15,6 +15,18 @@ cut and that this clone does not carry.
 
 ## [Unreleased]
 
+Project bundles have a separate native-files profile rooted at the explicit
+checkout. Its managed entries preserve credentials, trust, sessions, sibling
+resources and unrelated source files. The five declared component kinds are
+exercised through prepared forward application, source loss, replay, recovery,
+replacement and removal. Pi's project trust remains separate from installation.
+
+Standalone crate generation retains all component source modules, correctly
+resolves crate paths next to single-colon tokens and respects Cargo's configured
+target directory. CI checks the generated package, compiles its tests and reads
+its actual provider declaration. Published releases and existing profile fields
+remain unchanged.
+
 ## [0.0.94] - 2026-10-13
 
 Forward configuration plans now support explicit preparation before any
