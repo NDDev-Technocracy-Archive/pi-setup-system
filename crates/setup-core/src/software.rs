@@ -1672,6 +1672,47 @@ mod tests {
         );
     }
 
+    /// A nested `.cmd` member on Windows can be installed over.
+    ///
+    /// Cursor's weekly evidence failed here on both Windows legs: the first
+    /// install exposed `bin\agent.cmd`, and the next install refused it as an
+    /// inconsistent record. `expose` writes the launcher for
+    /// `root\version\member`; the inspection before the next operation
+    /// rebuilt that path from the manifest's `/`-separated record, so the two
+    /// launcher texts differed by one separator. Only a nested member that
+    /// gets a launcher reaches that comparison.
+    #[test]
+    #[cfg(windows)]
+    fn a_nested_command_script_member_can_be_installed_over() {
+        let member = "package/cursor-agent.cmd";
+        let (at, artifact) = staged("nested-cmd", b"@echo agent\r\n", member);
+        let archive = at.join("artifact.tgz");
+        let root = at.join("prefix");
+        let first = Software {
+            version: "1.0.0",
+            command: "agent",
+            delivery: Delivery::Artifacts(&[]),
+            unsupported: &[],
+            previous: None,
+        };
+        let second = Software {
+            version: "1.0.1",
+            command: "agent",
+            delivery: Delivery::Artifacts(&[]),
+            unsupported: &[],
+            previous: None,
+        };
+        install(&first, &artifact, &archive, &root).unwrap();
+        install(&second, &artifact, &archive, &root).unwrap();
+        assert_eq!(
+            Present::under_named(&root, "agent", member)
+                .exposed
+                .as_deref(),
+            Some("1.0.1")
+        );
+        fs::remove_dir_all(at).unwrap();
+    }
+
     /// The exposed version is recorded, so it is readable where no link exists.
     ///
     /// This is the Windows defect written as a test that fails on Linux too.
