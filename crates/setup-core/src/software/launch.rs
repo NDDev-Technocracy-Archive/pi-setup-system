@@ -151,7 +151,17 @@ fn inspect(
     }
     #[cfg(not(unix))]
     {
-        let expected = io(exposure::wrapper(&path.join(executable)))?;
+        // Rebuilt exactly as `expose` wrote it: `root\version\member`. The
+        // manifest records the same path with `/`, and a launcher compared
+        // against that spelling differs by one separator for any nested
+        // member, which refused every operation after a first install.
+        let member = manifest
+            .executable
+            .strip_prefix(&format!("{}/", manifest.version))
+            .ok_or_else(refuse)?;
+        let expected = io(exposure::wrapper(
+            &path.join(&manifest.version).join(member),
+        ))?;
         let valid = if let Some(bytes) = expected {
             records::read_bytes(bin, &entries[0].0, 16 * 1024)? == Some(bytes)
         } else {

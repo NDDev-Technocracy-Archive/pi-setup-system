@@ -5,7 +5,7 @@ name: appcontainer-probe
 #
 # Hosted Windows runners were unavailable on the first two attempts (both
 # exited in four seconds with zero steps). These public repositories run
-# `windows-latest` on every commit, so the runner is known to work here and
+# `windows-2025` on every commit, so the runner is known to work here and
 # the question can actually be asked.
 #
 # **The shape is worth remembering past this workflow.** A red run in a list
@@ -71,7 +71,7 @@ permissions:
 jobs:
   reach:
     name: can an AppContainer reach an ACE'd target
-    runs-on: windows-latest
+    runs-on: windows-2025
     timeout-minutes: 15
     steps:
       - name: Create a profile, ACE only the target, and try to read it
