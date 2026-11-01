@@ -292,7 +292,10 @@ def cross_two_releases(
     # the version removed was always the exposed one. That is the case a removal
     # cannot get wrong, and the case it did get wrong was the other one.
     print("inact ", end="", flush=True)
-    remove_the_program(binary, target, prefix, info, still_running=earlier)
+    # Its own operation id. The provider keeps every admitted request by id
+    # and refuses an id reused for a different plan, so this removal must not
+    # borrow the one the final removal below is planned under.
+    remove_the_program(binary, target, prefix, info, still_running=earlier, nonce=6)
     survivor = (
         "still starts"
         if "launch" in info["supported_commands"]
@@ -389,7 +392,12 @@ def place(
 
 
 def remove_the_program(
-    binary: str, target: Path, prefix: Path, info: dict, still_running: str | None = None
+    binary: str,
+    target: Path,
+    prefix: Path,
+    info: dict,
+    still_running: str | None = None,
+    nonce: int = 2,
 ) -> None:
     """Take the product back off, and prove the prefix says so.
 
@@ -425,7 +433,7 @@ def remove_the_program(
         )
 
     print("remove", end="", flush=True)
-    planned = plan(binary, target, prefix, "software_remove", 2)
+    planned = plan(binary, target, prefix, "software_remove", nonce)
     body = prefix.parent / "remove.json"
     body.write_text(
         json.dumps(planned["plan"], separators=(",", ":"), sort_keys=True),
