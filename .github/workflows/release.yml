@@ -39,19 +39,19 @@ jobs:
         # architectures. Shipping fewer would leave the declaration true of what
         # the code supports and false of what anyone can actually download.
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-26.04
             target: x86_64-unknown-linux-gnu
             suffix: ''
           - os: ubuntu-24.04-arm
             target: aarch64-unknown-linux-gnu
             suffix: ''
-          - os: macos-latest
+          - os: macos-15
             target: aarch64-apple-darwin
             suffix: ''
           - os: macos-15-intel
             target: x86_64-apple-darwin
             suffix: ''
-          - os: windows-latest
+          - os: windows-2025
             target: x86_64-pc-windows-msvc
             suffix: '.exe'
           - os: windows-11-arm
@@ -88,7 +88,7 @@ jobs:
       # -- only `python` is -- so running it on all three would fail there for a
       # reason that has nothing to do with the release.
       - name: Refuse a tag that does not match the crate version
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-26.04'
         env:
           TAG: ${{ inputs.tag || github.ref_name }}
         run: |
@@ -121,7 +121,7 @@ jobs:
   publish:
     name: publish
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     permissions:
       contents: write # creates the release and uploads its assets
@@ -191,7 +191,7 @@ jobs:
   package:
     name: package
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 20
     permissions:
       contents: read

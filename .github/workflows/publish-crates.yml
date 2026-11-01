@@ -21,7 +21,7 @@ permissions:
 jobs:
   publish:
     name: package, verify and publish
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: release
     permissions:
       contents: read
