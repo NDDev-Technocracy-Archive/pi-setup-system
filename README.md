@@ -241,6 +241,22 @@ and Windows. The helper supplies a hash-pinned temporary Linux library, exposes
 the selected Xcode library and C headers on macOS, and uses the installed
 LLVM/MSVC SDK on Windows. It changes no system packages or runtime requirements.
 
+## Source and native CI commands
+
+`just setup` fetches locked dependency/advisory inputs and runs the unchanged full
+audit without compiling. `just check` reads those inputs offline and runs every
+source, policy and workflow check.
+`just test` runs the existing lint/build/crates.io-source/unit surface under one
+live build-only LibClang environment; `just build` builds the current targets.
+`just boundary` rebuilds workspace release artifacts while retaining dependency
+caches, then checks the actual binary's native import table and static declaration.
+`just verify` runs these checks for the current Linux/macOS execution host.
+
+CI reads the compiler/components from `rust-toolchain.toml` and the minimum from
+`Cargo.toml`. The existing main/full macOS/Windows and minimum jobs remain separate;
+Windows import-table coverage is still not claimed. No command installs a service,
+launches the vendor program or publishes a release.
+
 ## Licence
 
 AGPL-3.0-or-later. See `LICENSE`.
