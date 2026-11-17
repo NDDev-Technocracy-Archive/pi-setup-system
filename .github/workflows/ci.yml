@@ -157,7 +157,7 @@ jobs:
   gate:
     name: gate
     needs: [inputs, source, rust, boundary, platforms, msrv, merge-stops]
-    if: ${{ !cancelled() }}
+    if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions: {}
